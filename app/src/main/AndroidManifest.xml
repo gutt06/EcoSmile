@@ -15,6 +15,9 @@
         android:theme="@style/Theme.EcoSmile"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
