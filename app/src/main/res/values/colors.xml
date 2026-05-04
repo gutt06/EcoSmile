@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="soulsmile_orange">#F9A000</color>
+    <color name="soulsmile_gray">#4A4A4A</color>
+    <color name="input_border">#FFD580</color>
 </resources>
