@@ -69,7 +69,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Configuração do Retrofit (Certifique-se de usar o seu IP atual)
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.101/")
+            .baseUrl("https://api-ecosmile.onrender.com")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

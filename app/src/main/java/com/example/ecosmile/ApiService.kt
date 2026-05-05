@@ -9,7 +9,7 @@ import retrofit2.http.Query
 
 interface ApiService {
     // Metodo para Login
-    @GET("/apis/login.php")
+    @GET("login.php")
     fun login(
         @Query("email") email: String,
         @Query("senha") senha: String
@@ -17,7 +17,7 @@ interface ApiService {
 
     // Metodo para Cadastro
     @FormUrlEncoded
-    @POST("/apis/cadastro.php")
+    @POST("cadastro.php")
     fun cadastrar(
         @Field("nome") nome: String,
         @Field("email") email: String,
@@ -26,7 +26,7 @@ interface ApiService {
 
     // Metodo para Troca de Senha
     @FormUrlEncoded
-    @POST("/apis/trocar_senha.php")
+    @POST("trocar_senha.php")
     fun trocarSenha(
         @Field("email") email: String,
         @Field("nova_senha") novaSenha: String

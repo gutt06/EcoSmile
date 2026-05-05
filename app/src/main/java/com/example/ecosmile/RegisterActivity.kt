@@ -54,7 +54,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun cadastrarNoServidor(nome: String, email: String, senha: String) {
         // LEMBRE-SE: Use o IP do seu computador aqui (o mesmo da LoginActivity)
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.101/")
+            .baseUrl("https://api-ecosmile.onrender.com")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

@@ -51,7 +51,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
     private fun atualizarSenhaNoServidor(email: String, novaSenha: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.101/") //IP
+            .baseUrl("https://api-ecosmile.onrender.com") //IP
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
