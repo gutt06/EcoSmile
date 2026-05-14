@@ -76,30 +76,39 @@ class LoginActivity : AppCompatActivity() {
         val apiService = retrofit.create(ApiService::class.java)
         val call = apiService.login(email, password)
 
-        // Chamada assíncrona para o PHP
-        call.enqueue(object : Callback<List<LoginResponse>> {
-            override fun onResponse(
-                call: Call<List<LoginResponse>>,
-                response: Response<List<LoginResponse>>
-            ) {
-                if (response.isSuccessful && response.body() != null) {
-                    val listaUsuarios = response.body()!!
-
-                    if (listaUsuarios.isNotEmpty()) {
-                        // Sucesso: Vai para a MainActivity (Home do App)
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(intent)
-                        finish() // Fecha a tela de login para não voltar ao clicar em "back"
-                    } else {
-                        Toast.makeText(this@LoginActivity, "E-mail ou senha incorretos", Toast.LENGTH_LONG).show()
-                    }
+        // 1. Tenta login como Admin primeiro
+        apiService.loginAdmin(email, password).enqueue(object : Callback<List<AdminResponse>> {
+            override fun onResponse(call: Call<List<AdminResponse>>, response: Response<List<AdminResponse>>) {
+                if (response.isSuccessful && response.body()?.isNotEmpty() == true) {
+                    // É admin — vai para AdminHomeActivity
+                    Toast.makeText(this@LoginActivity, "Bem-vindo, Administrador!", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@LoginActivity, AdminHomeActivity::class.java))
+                    finish()
                 } else {
-                    Toast.makeText(this@LoginActivity, "Erro de resposta do servidor", Toast.LENGTH_LONG).show()
+                    // Não é admin — tenta login como usuário comum
+                    tentarLoginUsuario(apiService, email, password)
+                }
+            }
+
+            override fun onFailure(call: Call<List<AdminResponse>>, t: Throwable) {
+                Toast.makeText(this@LoginActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    private fun tentarLoginUsuario(apiService: ApiService, email: String, password: String) {
+        apiService.login(email, password).enqueue(object : Callback<List<LoginResponse>> {
+            override fun onResponse(call: Call<List<LoginResponse>>, response: Response<List<LoginResponse>>) {
+                if (response.isSuccessful && response.body()?.isNotEmpty() == true) {
+                    // É usuário comum — vai para MainActivity
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    finish()
+                } else {
+                    Toast.makeText(this@LoginActivity, "E-mail ou senha incorretos", Toast.LENGTH_LONG).show()
                 }
             }
 
             override fun onFailure(call: Call<List<LoginResponse>>, t: Throwable) {
-                // Se chegar aqui, verifique o XAMPP e o IP no baseUrl
                 Toast.makeText(this@LoginActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_LONG).show()
             }
         })
