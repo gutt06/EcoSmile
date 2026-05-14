@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Botão Voltar -->
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_arrow_back"
+            android:background="@drawable/circle_gray"
+            android:contentDescription="Voltar"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Título -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Criar ponto de coleta"
+            android:textSize="22sp"
+            android:textColor="#222222"
+            android:textStyle="bold"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Campo Nome -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nome"
+            android:textSize="14sp"
+            android:textColor="#222222"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etNome"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:hint="Nome do ponto de coleta"
+            android:background="@drawable/bg_input"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="text"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Campo Endereço -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Endereço"
+            android:textSize="14sp"
+            android:textColor="#222222"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etEndereco"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:hint="Endereço do ponto de coleta"
+            android:background="@drawable/bg_input"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="text"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Campo Latitude -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Latitude"
+            android:textSize="14sp"
+            android:textColor="#222222"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etLatitude"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:hint="Latitude do ponto de coleta"
+            android:background="@drawable/bg_input"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="numberDecimal|numberSigned"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Campo Longitude -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Longitude"
+            android:textSize="14sp"
+            android:textColor="#222222"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etLongitude"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:hint="Longitude do ponto de coleta"
+            android:background="@drawable/bg_input"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="numberDecimal|numberSigned"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Campo Horário -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Horário"
+            android:textSize="14sp"
+            android:textColor="#222222"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etHorario"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:hint="Horário do ponto de coleta"
+            android:background="@drawable/bg_input"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="text"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Botão Criar -->
+        <Button
+            android:id="@+id/btnCriar"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Criar"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:background="@drawable/bg_button_orange" />
+
+    </LinearLayout>
+</ScrollView>
