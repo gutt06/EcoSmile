@@ -15,6 +15,21 @@
         android:theme="@style/Theme.EcoSmile"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".AdminTokenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminPontoColetaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminTipoDescontoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminTipoConsultaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminHomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
