@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -33,8 +34,10 @@ class ForgotPasswordActivity : AppCompatActivity() {
         val etEmail = findViewById<EditText>(R.id.forgotEmail)
         val etNovaSenha = findViewById<EditText>(R.id.newPassword)
         val btnUpdate = findViewById<Button>(R.id.btnUpdatePassword)
+        val voltarLoginTextView = findViewById<TextView>(R.id.voltarLoginTextView)
 
         btnBack.setOnClickListener { finish() }
+        voltarLoginTextView.setOnClickListener { finish() }
 
         btnUpdate.setOnClickListener {
             val email = etEmail.text.toString()
