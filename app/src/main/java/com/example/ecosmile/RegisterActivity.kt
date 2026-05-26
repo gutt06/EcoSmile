@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -33,20 +34,30 @@ class RegisterActivity : AppCompatActivity() {
         val etNome = findViewById<EditText>(R.id.registerName)
         val etEmail = findViewById<EditText>(R.id.registerEmail)
         val etSenha = findViewById<EditText>(R.id.registerPassword)
+        val etConfirmarSenha = findViewById<EditText>(R.id.confirmarSenhaEditText)
         val btnCadastrar = findViewById<Button>(R.id.registerButton)
+        val voltarLoginLayout = findViewById<LinearLayout>(R.id.voltarLoginLinearLayout)
 
         btnBack.setOnClickListener { finish() }
+        voltarLoginLayout.setOnClickListener { finish() }
 
         btnCadastrar.setOnClickListener {
-            val nome = etNome.text.toString()
-            val email = etEmail.text.toString()
+            val nome = etNome.text.toString().trim()
+            val email = etEmail.text.toString().trim()
             val senha = etSenha.text.toString()
+            val confirmarSenha = etConfirmarSenha.text.toString()
 
             if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
                 Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show()
-            } else {
-                cadastrarNoServidor(nome, email, senha)
+                return@setOnClickListener
             }
+
+            if (senha != confirmarSenha) {
+                Toast.makeText(this, "As senhas não coincidem!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            cadastrarNoServidor(nome, email, senha)
         }
 
     }
