@@ -100,8 +100,11 @@ class LoginActivity : AppCompatActivity() {
         apiService.login(email, password).enqueue(object : Callback<List<LoginResponse>> {
             override fun onResponse(call: Call<List<LoginResponse>>, response: Response<List<LoginResponse>>) {
                 if (response.isSuccessful && response.body()?.isNotEmpty() == true) {
-                    // É usuário comum — vai para MainActivity
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    // É usuário comum — vai para MainActivity passando o nome
+                    val nome = response.body()?.firstOrNull()?.Nome ?: ""
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    intent.putExtra("NOME_USUARIO", nome)
+                    startActivity(intent)
                     finish()
                 } else {
                     Toast.makeText(this@LoginActivity, "E-mail ou senha incorretos", Toast.LENGTH_LONG).show()

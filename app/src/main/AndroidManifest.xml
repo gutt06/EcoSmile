@@ -14,39 +14,46 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EcoSmile"
         android:usesCleartextTraffic="true">
+
         <activity
-            android:name=".AdminTokenActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AdminPontoColetaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AdminTipoDescontoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AdminTipoConsultaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AdminHomeActivity"
-            android:exported="false" />
+            android:name=".LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".AdminHomeActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity
+            android:name=".EcoSmileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MeusDescontosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MeuImpactoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LojinhaEcoSmileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrarDevolucaoActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
