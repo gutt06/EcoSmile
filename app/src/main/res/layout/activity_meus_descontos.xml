@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <ImageView
+            android:id="@+id/btnVoltarDescontos"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="8dp"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#111111"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Meus Descontos"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="#111111"
+            android:fontFamily="@font/sf_pro"
+            android:layout_marginTop="24dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Apresente os códigos abaixo na recepção da clínica para usar seus prêmios."
+            android:textSize="15sp"
+            android:textColor="#777777"
+            android:fontFamily="@font/sf_pro"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardVazioDescontos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F8FAFA"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Você ainda não possui nenhum cupom ativo.\n\nVá até a lojinha do EcoSmile para trocar seus pontos!"
+                android:textSize="14sp"
+                android:textColor="#999999"
+                android:fontFamily="@font/sf_pro"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.4"
+                android:padding="32dp"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:id="@+id/containerDescontos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+</ScrollView>
