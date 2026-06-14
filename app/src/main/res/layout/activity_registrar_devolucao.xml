@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="40dp">
+
+        <!-- Top Bar -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/btnVoltarDevolucao"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="#333333"
+                android:background="@drawable/bg_circle_gray"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Registrar devolução"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#111111"
+                android:fontFamily="@font/sf_pro" />
+
+        </RelativeLayout>
+
+        <!-- Descrição -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Adicione os códigos impressos na embalagem dos alinhadores que você irá devolver na unidade."
+            android:textSize="14sp"
+            android:textColor="#AAAAAA"
+            android:fontFamily="@font/sf_pro"
+            android:lineSpacingMultiplier="1.5"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Info Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#F0EFEC"
+            app:cardBackgroundColor="#FAFAF9">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Label -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="INFORMAÇÕES DE DESCARTE"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="#ABABAB"
+                    android:fontFamily="@font/sf_pro"
+                    android:letterSpacing="0.12"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Fase -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fase Atual: Fase 3"
+                    android:textSize="22sp"
+                    android:textColor="#111111"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/sf_pro"
+                    android:layout_marginBottom="10dp" />
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F0EFEC"
+                    android:layout_marginBottom="10dp" />
+
+                <!-- Aviso fase -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginEnd="10dp"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="0dp"
+                        app:cardBackgroundColor="#FFF0EC">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center"
+                            android:src="@android:drawable/ic_dialog_info"
+                            app:tint="#F97553" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Só é permitido devolver alinhadores de fases anteriores."
+                        android:textSize="12.5sp"
+                        android:textColor="#F97553"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/sf_pro"
+                        android:lineSpacingMultiplier="1.3" />
+
+                </LinearLayout>
+
+                <!-- Código base -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginEnd="10dp"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="0dp"
+                        app:cardBackgroundColor="#E8F5F8">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center"
+                            android:src="@android:drawable/ic_menu_myplaces"
+                            app:tint="#317589" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Seu código base de paciente: NDCW"
+                        android:textSize="12.5sp"
+                        android:textColor="#317589"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/sf_pro" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Section label: código -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CÓDIGO DA EMBALAGEM"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="#ABABAB"
+            android:fontFamily="@font/sf_pro"
+            android:letterSpacing="0.12"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Input + botão Adicionar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="28dp">
+
+            <EditText
+                android:id="@+id/inputCodigoAlinhador"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_input_premium"
+                android:hint="Ex: NDCW01"
+                android:textAllCaps="true"
+                android:textColorHint="#BBBBBB"
+                android:textColor="#1A1A1A"
+                android:inputType="textCapCharacters"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:textSize="15sp"
+                android:fontFamily="@font/sf_pro"
+                android:layout_marginEnd="10dp" />
+
+            <Button
+                android:id="@+id/btnAdicionarCodigo"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:text="Adicionar"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/sf_pro"
+                android:textColor="#F97553"
+                android:backgroundTint="#FFF5F2"
+                app:strokeColor="#F97553"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="28dp"
+                android:elevation="0dp" />
+
+        </LinearLayout>
+
+        <!-- Section label: itens -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ITENS REGISTRADOS"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="#ABABAB"
+            android:fontFamily="@font/sf_pro"
+            android:letterSpacing="0.12"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Estado vazio -->
+        <TextView
+            android:id="@+id/txtNenhumCodigo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nenhum código adicionado ainda."
+            android:textSize="14sp"
+            android:textColor="#CCCCCC"
+            android:fontFamily="@font/sf_pro"
+            android:gravity="center"
+            android:padding="28dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Container dos códigos -->
+        <LinearLayout
+            android:id="@+id/containerCodigosRegistrados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="28dp" />
+
+        <!-- Botão Finalizar -->
+        <Button
+            android:id="@+id/btnFinalizarDevolucao"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Finalizar registro de devolução"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/sf_pro"
+            android:backgroundTint="#F97553"
+            app:cornerRadius="28dp"
+            android:elevation="0dp" />
+
+    </LinearLayout>
+</ScrollView>
