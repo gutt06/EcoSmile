@@ -11,11 +11,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class LojinhaEcoSmileActivity : AppCompatActivity() {
+
+    private val urlApi = "https://api-ecosmile.onrender.com/"
 
     private lateinit var txtSaldoLojinha: TextView
 
@@ -36,55 +40,89 @@ class LojinhaEcoSmileActivity : AppCompatActivity() {
         val btnResgatarEscova = findViewById<Button>(R.id.btnResgatarEscova)
 
         // Traz o saldo real do usuário logo que a tela abre
-        atualizarSaldoNaTela()
+        buscarSaldoReal()
 
         btnVoltar.setOnClickListener { finish() }
 
         // Conecta os botões com os novos valores super acessíveis
         btnResgatarDesconto.setOnClickListener {
-            tentarResgatarProduto("Desconto de 15%", "Aplicável em manutenções", "DESC15", 10)
+            tentarResgatarProduto(btnResgatarDesconto, "Desconto de 15%", "Aplicável em manutenções", "DESC15", 10)
         }
 
         btnResgatarEscova.setOnClickListener {
-            tentarResgatarProduto("Escova Ecológica Bamboo", "Brinde exclusivo sustentável", "BAMBOO", 15)
+            tentarResgatarProduto(btnResgatarEscova, "Escova Ecológica Bamboo", "Brinde exclusivo sustentável", "BAMBOO", 15)
         }
     }
 
-    private fun atualizarSaldoNaTela() {
-        txtSaldoLojinha.text = "${EcoSmileActivity.saldoGlobal} pts"
+    private fun buscarSaldoReal() {
+        // Indica visualmente que o saldo está sendo carregado
+        txtSaldoLojinha.text = "Carregando..."
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(urlApi)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+
+        apiService.buscarSaldo(LoginActivity.idUsuarioLogado).enqueue(object : Callback<SaldoResponse> {
+            override fun onResponse(call: Call<SaldoResponse>, response: Response<SaldoResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    txtSaldoLojinha.text = "${response.body()!!.saldo} pts"
+                } else {
+                    txtSaldoLojinha.text = "0 pts"
+                }
+            }
+
+            override fun onFailure(call: Call<SaldoResponse>, t: Throwable) {
+                txtSaldoLojinha.text = "0 pts"
+                Toast.makeText(this@LojinhaEcoSmileActivity, "Erro de conexão ao buscar saldo.", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
-    // O Motor de Compra (Conectado com o restante do App)
-    private fun tentarResgatarProduto(titulo: String, descricao: String, prefixoCupom: String, custoPontos: Int) {
-        // Valida se o usuário tem pontos suficientes na conta global
-        if (EcoSmileActivity.saldoGlobal >= custoPontos) {
+    // O Motor de Compra (Conectado ao banco de dados)
+    private fun tentarResgatarProduto(botao: Button, titulo: String, descricao: String, prefixoCupom: String, custoPontos: Int) {
+        // Indica visualmente que o resgate está sendo processado e evita cliques duplicados
+        val textoOriginalBotao = botao.text
+        botao.isEnabled = false
+        botao.text = "Processando..."
 
-            // 1. Deduz os pontos da conta
-            EcoSmileActivity.saldoGlobal -= custoPontos
-            atualizarSaldoNaTela()
+        val retrofit = Retrofit.Builder()
+            .baseUrl(urlApi)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-            // 2. Coleta a data do momento do resgate
-            val dataHoje = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+        val apiService = retrofit.create(ApiService::class.java)
 
-            // 3. Gera um código hash único para o voucher
-            val caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-            val hashAleatorio = (1..5).map { caracteres.random() }.joinToString("")
-            val codigoCupomGerado = "$prefixoCupom-$hashAleatorio"
+        apiService.resgatarCupom(
+            LoginActivity.idUsuarioLogado,
+            custoPontos,
+            titulo,
+            descricao,
+            prefixoCupom
+        ).enqueue(object : Callback<ResgateResponse> {
+            override fun onResponse(call: Call<ResgateResponse>, response: Response<ResgateResponse>) {
+                botao.isEnabled = true
+                botao.text = textoOriginalBotao
 
-            // 4. Salva o cupom na carteira global (Meus Descontos)
-            EcoSmileActivity.listaDescontos.add(
-                0, // Adiciona sempre no topo da lista
-                EcoSmileActivity.DescontoItem(titulo, descricao, codigoCupomGerado, dataHoje)
-            )
+                val body = response.body()
+                if (response.isSuccessful && body?.sucesso == true) {
+                    // Atualiza o saldo exibido com o valor já descontado pelo servidor
+                    buscarSaldoReal()
+                    mostrarPopUpSucesso(titulo, body.codigoCupom ?: "")
+                } else {
+                    val mensagem = body?.mensagem ?: "Não foi possível resgatar este item."
+                    Toast.makeText(this@LojinhaEcoSmileActivity, mensagem, Toast.LENGTH_LONG).show()
+                }
+            }
 
-            // 5. Exibe a comemoração
-            mostrarPopUpSucesso(titulo, codigoCupomGerado)
-
-        } else {
-            // Se não tiver saldo, avisa exatamente quantos pontos faltam
-            val faltam = custoPontos - EcoSmileActivity.saldoGlobal
-            Toast.makeText(this, "Saldo insuficiente. Faltam $faltam pts para este item.", Toast.LENGTH_LONG).show()
-        }
+            override fun onFailure(call: Call<ResgateResponse>, t: Throwable) {
+                botao.isEnabled = true
+                botao.text = textoOriginalBotao
+                Toast.makeText(this@LojinhaEcoSmileActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     private fun mostrarPopUpSucesso(nomeProduto: String, cupom: String) {
