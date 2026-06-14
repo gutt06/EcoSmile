@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    activity_meu_impacto.xml  —  sousmile
+    Back arrow, título, subtítulo, card alerta segurança,
+    seção "O que eles viram?" (vasos + material escolar), seção "Nosso Marco"
+    com dois cards de métricas lado a lado.
+-->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="48dp">
+
+        <!-- ── Back arrow ─────────────────────────────────────────── -->
+        <ImageView
+            android:id="@+id/btnVoltarImpacto"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="20dp"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#111111"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp" />
+
+        <!-- ── Título ─────────────────────────────────────────────── -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nosso Impacto"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:textColor="#111111"
+            android:fontFamily="@font/sf_pro"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- ── Subtítulo ──────────────────────────────────────────── -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Entenda como seus alinhadores ganham um novo propósito com segurança."
+            android:textSize="15sp"
+            android:textColor="#777777"
+            android:fontFamily="@font/sf_pro"
+            android:lineSpacingMultiplier="1.35"
+            android:layout_marginBottom="32dp" />
+
+        <!-- ── Card: Não reutilizamos na saúde! ──────────────────── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="36dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1.5dp"
+            app:strokeColor="#FFD4C4"
+            app:cardBackgroundColor="#FFF8F6">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Ícone + título -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#F97553"
+                        android:layout_marginEnd="16dp">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:src="@android:drawable/ic_lock_lock"
+                            app:tint="#FFFFFF" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Não reutilizamos na saúde!"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#111111"
+                        android:fontFamily="@font/sf_pro" />
+                </LinearLayout>
+
+                <!-- Descrição -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fique tranquilo: nenhum alinhador volta para a boca de outro paciente. O material que você devolve é 100% triturado, descaracterizado e derretido em altas temperaturas para virar resina plástica comum."
+                    android:textSize="14sp"
+                    android:textColor="#555555"
+                    android:fontFamily="@font/sf_pro"
+                    android:lineSpacingMultiplier="1.4" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── Label: O que eles viram? ───────────────────────────── -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="O QUE ELES VIRAM?"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#317589"
+            android:letterSpacing="0.12"
+            android:fontFamily="@font/sf_pro"
+            android:layout_marginBottom="20dp" />
+
+        <!-- ── Item: Vasos Ecológicos ─────────────────────────────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E8F5EE"
+                app:cardBackgroundColor="#F0F9F5"
+                android:layout_marginEnd="20dp">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:src="@android:drawable/ic_menu_myplaces"
+                    app:tint="#3A875D" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vasos Ecológicos"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#111111"
+                    android:fontFamily="@font/sf_pro"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A resina derretida é injetada em moldes de jardinagem e paisagismo."
+                    android:textSize="13sp"
+                    android:textColor="#777777"
+                    android:fontFamily="@font/sf_pro"
+                    android:lineSpacingMultiplier="1.3" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Divisor leve -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F0F0F0"
+            android:layout_marginBottom="20dp" />
+
+        <!-- ── Item: Material Escolar ─────────────────────────────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="36dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#EBEBEB"
+                app:cardBackgroundColor="#F5F5F7"
+                android:layout_marginEnd="20dp">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:src="@android:drawable/ic_menu_edit"
+                    app:tint="#4B7DFF" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Material Escolar"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#111111"
+                    android:fontFamily="@font/sf_pro"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A produção de réguas, esquadros e itens doados para escolas públicas."
+                    android:textSize="13sp"
+                    android:textColor="#777777"
+                    android:fontFamily="@font/sf_pro"
+                    android:lineSpacingMultiplier="1.3" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ── Label: Nosso Marco ─────────────────────────────────── -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NOSSO MARCO"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#317589"
+            android:letterSpacing="0.12"
+            android:fontFamily="@font/sf_pro"
+            android:layout_marginBottom="20dp" />
+
+        <!-- ── Cards de métricas lado a lado ─────────────────────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <!-- Card: Alinhadores transformados -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1.5dp"
+                app:strokeColor="#C8EDD8"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:gravity="center">
+
+                    <!-- Ícone reciclar -->
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:src="@android:drawable/ic_popup_sync"
+                        app:tint="#3A875D"
+                        android:layout_marginBottom="12dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5.000+"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:textColor="#3A875D"
+                        android:fontFamily="@font/sf_pro"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ALINHADORES\nTRANSFORMADOS"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textColor="#999999"
+                        android:fontFamily="@font/sf_pro"
+                        android:lineSpacingMultiplier="1.3" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card: Redução de carbono -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1.5dp"
+                app:strokeColor="#FFD4C4"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:gravity="center">
+
+                    <!-- Ícone globo -->
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_mylocation"
+                        app:tint="#F97553"
+                        android:layout_marginBottom="12dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1.2 T"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:textColor="#F97553"
+                        android:fontFamily="@font/sf_pro"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="REDUÇÃO DE\nCARBONO"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textColor="#999999"
+                        android:fontFamily="@font/sf_pro"
+                        android:lineSpacingMultiplier="1.3" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
