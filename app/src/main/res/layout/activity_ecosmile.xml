@@ -116,7 +116,7 @@
                             android:id="@+id/txtSaldoPontos"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="5.000"
+                            android:text="..."
                             android:textSize="52sp"
                             android:textColor="#F97553"
                             android:fontFamily="@font/sf_pro"
@@ -429,6 +429,28 @@
             android:fontFamily="@font/sf_pro"
             android:layout_marginBottom="16dp" />
 
+        <!-- Estado de carregamento -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardHistoricoCarregando"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F8FAFA"
+            android:visibility="visible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Carregando histórico..."
+                android:textSize="13sp"
+                android:textColor="#999999"
+                android:fontFamily="@font/sf_pro"
+                android:gravity="center"
+                android:padding="28dp" />
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Estado vazio -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardHistoricoVazio"
@@ -438,7 +460,7 @@
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:cardBackgroundColor="#F8FAFA"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="match_parent"

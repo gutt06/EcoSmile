@@ -17,22 +17,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.card.MaterialCardView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class EcoSmileActivity : AppCompatActivity() {
 
-    data class HistoricoItem(val codigo: String, val data: String, val fase: String, val pontos: String)
-    data class DescontoItem(val titulo: String, val descricao: String, val codigoCupom: String, val dataResgate: String)
-
-    companion object {
-        var saldoGlobal = 50
-        // Começamos a lista vazia para exibir o layout de "Nenhuma devolução"
-        val listaHistorico = mutableListOf<HistoricoItem>()
-        val listaDescontos = mutableListOf<DescontoItem>()
-    }
+    private val urlApi = "https://api-ecosmile.onrender.com/"
 
     private lateinit var txtSaldoPontos: TextView
     private lateinit var containerHistorico: LinearLayout
     private lateinit var cardHistoricoVazio: MaterialCardView
+    private lateinit var cardHistoricoCarregando: MaterialCardView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +45,7 @@ class EcoSmileActivity : AppCompatActivity() {
         txtSaldoPontos = findViewById(R.id.txtSaldoPontos)
         containerHistorico = findViewById(R.id.containerHistorico)
         cardHistoricoVazio = findViewById(R.id.cardHistoricoVazio)
+        cardHistoricoCarregando = findViewById(R.id.cardHistoricoCarregando)
 
         val btnVoltar = findViewById<ImageView>(R.id.btnVoltarEco)
         val btnRegistrarDevolucao = findViewById<Button>(R.id.btnRegistrarDevolucao)
@@ -75,8 +74,50 @@ class EcoSmileActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        txtSaldoPontos.text = saldoGlobal.toString()
-        renderizarHistorico()
+        carregarDadosDoBanco()
+    }
+
+    private fun carregarDadosDoBanco() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(urlApi)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+        val usuarioId = LoginActivity.idUsuarioLogado
+
+        // Indica visualmente que os dados estão sendo (re)carregados
+        txtSaldoPontos.text = "..."
+
+        // 1. Busca o saldo de pontos atual
+        apiService.buscarSaldo(usuarioId).enqueue(object : Callback<SaldoResponse> {
+            override fun onResponse(call: Call<SaldoResponse>, response: Response<SaldoResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    txtSaldoPontos.text = response.body()!!.saldo.toString()
+                } else {
+                    txtSaldoPontos.text = "0"
+                }
+            }
+
+            override fun onFailure(call: Call<SaldoResponse>, t: Throwable) {
+                txtSaldoPontos.text = "0"
+            }
+        })
+
+        // 2. Busca o histórico de devoluções
+        apiService.buscarHistorico(usuarioId).enqueue(object : Callback<List<HistoricoResponse>> {
+            override fun onResponse(call: Call<List<HistoricoResponse>>, response: Response<List<HistoricoResponse>>) {
+                if (response.isSuccessful && response.body() != null) {
+                    renderizarHistorico(response.body()!!)
+                } else {
+                    renderizarHistorico(emptyList())
+                }
+            }
+
+            override fun onFailure(call: Call<List<HistoricoResponse>>, t: Throwable) {
+                renderizarHistorico(emptyList())
+            }
+        })
     }
 
     private fun exibirPopUpPassoAPasso() {
@@ -101,11 +142,14 @@ class EcoSmileActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun renderizarHistorico() {
+    private fun renderizarHistorico(lista: List<HistoricoResponse>) {
         containerHistorico.removeAllViews()
 
+        // Os dados chegaram (ou falharam): esconde o indicador de carregamento
+        cardHistoricoCarregando.visibility = View.GONE
+
         // Lógica de Visibilidade: Controla se mostra a lista ou o card de estado vazio
-        if (listaHistorico.isEmpty()) {
+        if (lista.isEmpty()) {
             cardHistoricoVazio.visibility = View.VISIBLE
             containerHistorico.visibility = View.GONE
             return
@@ -114,7 +158,7 @@ class EcoSmileActivity : AppCompatActivity() {
             containerHistorico.visibility = View.VISIBLE
         }
 
-        for (item in listaHistorico) {
+        for (item in lista) {
             val cardView = MaterialCardView(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -138,14 +182,14 @@ class EcoSmileActivity : AppCompatActivity() {
             }
 
             val txtCod = TextView(this).apply {
-                text = item.codigo
+                text = item.codigoAlinhador
                 textSize = 16f
                 setTypeface(null, Typeface.BOLD)
                 setTextColor(Color.parseColor("#111111"))
             }
 
             val txtSub = TextView(this).apply {
-                text = "${item.data} - ${item.fase}"
+                text = "${item.dataDevolucao} - Fase ${item.fase}"
                 textSize = 12f
                 setTextColor(Color.parseColor("#777777"))
                 setPadding(0, 4, 0, 0)
@@ -155,7 +199,7 @@ class EcoSmileActivity : AppCompatActivity() {
             colTexto.addView(txtSub)
 
             val txtPts = TextView(this).apply {
-                text = item.pontos
+                text = "+${item.pontosGerados} pts"
                 textSize = 16f
                 setTypeface(null, Typeface.BOLD)
                 setTextColor(Color.parseColor("#F97553"))
