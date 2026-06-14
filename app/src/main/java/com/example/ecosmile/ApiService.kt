@@ -9,10 +9,11 @@ import retrofit2.http.Query
 
 interface ApiService {
     // Metodo para Login
-    @GET("login.php")
+    @FormUrlEncoded
+    @POST("login.php")
     fun login(
-        @Query("email") email: String,
-        @Query("senha") senha: String
+        @Field("email") email: String,
+        @Field("senha") senha: String
     ): Call<List<LoginResponse>>
 
     // Metodo para Cadastro
@@ -22,7 +23,8 @@ interface ApiService {
         @Field("nome") nome: String,
         @Field("email") email: String,
         @Field("senha") senha: String,
-    ): Call<Void>
+        @Field("cpf") cpf: String? = null
+    ): Call<UnificadoResponse>
 
     // Metodo para Troca de Senha
     @FormUrlEncoded
@@ -30,7 +32,46 @@ interface ApiService {
     fun trocarSenha(
         @Field("email") email: String,
         @Field("nova_senha") novaSenha: String
-    ): Call<Void>
+    ): Call<TrocarSenhaResponse>
+
+    // Metodo para buscar o saldo de pontos do usuario
+    @GET("buscar_saldo.php")
+    fun buscarSaldo(
+        @Query("usuario_id") usuarioId: Int
+    ): Call<SaldoResponse>
+
+    // Metodo para buscar o historico de devolucoes do usuario
+    @GET("buscar_historico.php")
+    fun buscarHistorico(
+        @Query("usuario_id") usuarioId: Int
+    ): Call<List<HistoricoResponse>>
+
+    // Metodo para buscar os cupons resgatados pelo usuario
+    @GET("buscar_cupons.php")
+    fun buscarCupons(
+        @Query("usuario_id") usuarioId: Int
+    ): Call<List<CupomResponse>>
+
+    // Metodo para registrar a devolucao de um alinhador
+    @FormUrlEncoded
+    @POST("devolver_alinhador.php")
+    fun devolverAlinhador(
+        @Field("usuario_id") usuarioId: Int,
+        @Field("codigo_alinhador") codigoAlinhador: String,
+        @Field("fase") fase: Int,
+        @Field("pontos") pontos: Int
+    ): Call<DevolucaoResponse>
+
+    // Metodo para resgatar um cupom da lojinha
+    @FormUrlEncoded
+    @POST("resgatar_cupom.php")
+    fun resgatarCupom(
+        @Field("usuario_id") usuarioId: Int,
+        @Field("custo") custo: Int,
+        @Field("titulo") titulo: String,
+        @Field("descricao") descricao: String,
+        @Field("prefixo") prefixo: String
+    ): Call<ResgateResponse>
 
     // Rotas de admin
 
