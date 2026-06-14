@@ -18,21 +18,29 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.card.MaterialCardView
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class RegistrarDevolucaoActivity : AppCompatActivity() {
 
-    private val codigosAtuais = mutableListOf<String>()
+    // Cada alinhador adicionado guarda o código já formatado e a fase identificada
+    data class Alinhador(val codigo: String, val fase: Int)
 
-    // Variáveis que futuramente virão do Banco de Dados/Login
-    private val codigoPacienteLogado = "NDCW"
+    private val codigosAtuais = mutableListOf<Alinhador>()
+
+    // Dados de quem fez login
+    private val codigoPacienteLogado = LoginActivity.codigoPacienteLogado
     private val faseAtualDoPaciente = 3
+
+    private val urlApi = "https://api-ecosmile.onrender.com/"
 
     private lateinit var inputCodigo: EditText
     private lateinit var txtNenhumCodigo: TextView
     private lateinit var containerCodigos: LinearLayout
+    private lateinit var btnFinalizar: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +58,11 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
 
         val btnVoltar = findViewById<ImageView>(R.id.btnVoltarDevolucao)
         val btnAdicionar = findViewById<Button>(R.id.btnAdicionarCodigo)
-        val btnFinalizar = findViewById<Button>(R.id.btnFinalizarDevolucao)
+        btnFinalizar = findViewById(R.id.btnFinalizarDevolucao)
 
         btnVoltar.setOnClickListener { finish() }
 
-        // Ação de Adicionar com a NOVA LÓGICA DE VALIDAÇÃO
+        // Ação de Adicionar com a validação simplificada
         btnAdicionar.setOnClickListener {
             val codigoDigitado = inputCodigo.text.toString()
 
@@ -73,10 +81,10 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
             when (resultado) {
                 is DevolucaoValidator.Resultado.Sucesso -> {
                     // Verifica se o usuário já não adicionou esse mesmo código nesta sessão
-                    if (codigosAtuais.contains(resultado.codigoFormatado)) {
+                    if (codigosAtuais.any { it.codigo == resultado.codigoFormatado }) {
                         Toast.makeText(this, "Este código já foi adicionado à lista.", Toast.LENGTH_SHORT).show()
                     } else {
-                        codigosAtuais.add(resultado.codigoFormatado)
+                        codigosAtuais.add(Alinhador(resultado.codigoFormatado, resultado.fase))
                         inputCodigo.text.clear()
                         atualizarInterfaceItens()
                     }
@@ -88,26 +96,77 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
             }
         }
 
-        // Ação de Finalizar (Mantida igual, salva no histórico global)
+        // Ação de Finalizar: envia cada código para o banco de dados
         btnFinalizar.setOnClickListener {
             if (codigosAtuais.isEmpty()) {
                 Toast.makeText(this, "Adicione pelo menos um código válido antes de finalizar.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val pontosGanhos = codigosAtuais.size * 50
-            val dataHoje = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+            registrarDevolucoesNoBanco()
+        }
+    }
 
-            EcoSmileActivity.saldoGlobal += pontosGanhos
+    private fun registrarDevolucoesNoBanco() {
+        // Indica visualmente que o registro está sendo enviado e evita cliques duplicados
+        btnFinalizar.isEnabled = false
+        btnFinalizar.text = "Enviando..."
 
-            for (codigo in codigosAtuais) {
-                EcoSmileActivity.listaHistorico.add(
-                    0,
-                    EcoSmileActivity.HistoricoItem(codigo, dataHoje, "Fase Anterior", "+50 pts")
-                )
-            }
+        val retrofit = Retrofit.Builder()
+            .baseUrl(urlApi)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-            mostrarPopUpSucesso(pontosGanhos)
+        val apiService = retrofit.create(ApiService::class.java)
+
+        val pontosPorAlinhador = 50
+        val totalCodigos = codigosAtuais.size
+
+        var respostasRecebidas = 0
+        var pontosConfirmados = 0
+
+        for (alinhador in codigosAtuais) {
+            apiService.devolverAlinhador(
+                LoginActivity.idUsuarioLogado,
+                alinhador.codigo,
+                alinhador.fase,
+                pontosPorAlinhador
+            ).enqueue(object : Callback<DevolucaoResponse> {
+                override fun onResponse(call: Call<DevolucaoResponse>, response: Response<DevolucaoResponse>) {
+                    respostasRecebidas++
+
+                    val body = response.body()
+                    if (response.isSuccessful && body?.sucesso == true) {
+                        pontosConfirmados += pontosPorAlinhador
+                    } else {
+                        val mensagem = body?.mensagem ?: "Erro ao registrar o código ${alinhador.codigo}."
+                        Toast.makeText(this@RegistrarDevolucaoActivity, mensagem, Toast.LENGTH_LONG).show()
+                    }
+
+                    if (respostasRecebidas == totalCodigos) {
+                        finalizarRegistro(pontosConfirmados)
+                    }
+                }
+
+                override fun onFailure(call: Call<DevolucaoResponse>, t: Throwable) {
+                    respostasRecebidas++
+                    Toast.makeText(this@RegistrarDevolucaoActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_LONG).show()
+
+                    if (respostasRecebidas == totalCodigos) {
+                        finalizarRegistro(pontosConfirmados)
+                    }
+                }
+            })
+        }
+    }
+
+    private fun finalizarRegistro(pontosConfirmados: Int) {
+        // Restaura o botão para o estado normal
+        btnFinalizar.isEnabled = true
+        btnFinalizar.text = "Finalizar registro de devolução"
+
+        if (pontosConfirmados > 0) {
+            mostrarPopUpSucesso(pontosConfirmados)
         }
     }
 
@@ -120,7 +179,7 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
 
         containerCodigos.removeAllViews()
 
-        for (codigo in codigosAtuais) {
+        for (alinhador in codigosAtuais) {
             val cardView = MaterialCardView(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -139,7 +198,7 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
             }
 
             val txtCod = TextView(this).apply {
-                text = codigo
+                text = alinhador.codigo
                 textSize = 16f
                 setTypeface(null, Typeface.BOLD)
                 setTextColor(Color.parseColor("#111111"))

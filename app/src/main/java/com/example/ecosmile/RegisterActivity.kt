@@ -1,5 +1,6 @@
 package com.example.ecosmile
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -18,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RegisterActivity : AppCompatActivity() {
 
-
+    private lateinit var btnCadastrar: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +36,7 @@ class RegisterActivity : AppCompatActivity() {
         val etEmail = findViewById<EditText>(R.id.registerEmail)
         val etSenha = findViewById<EditText>(R.id.registerPassword)
         val etConfirmarSenha = findViewById<EditText>(R.id.confirmarSenhaEditText)
-        val btnCadastrar = findViewById<Button>(R.id.registerButton)
+        btnCadastrar = findViewById(R.id.registerButton)
         val voltarLoginLayout = findViewById<LinearLayout>(R.id.voltarLoginLinearLayout)
 
         btnBack.setOnClickListener { finish() }
@@ -63,29 +64,53 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun cadastrarNoServidor(nome: String, email: String, senha: String) {
-        // LEMBRE-SE: Use o IP do seu computador aqui (o mesmo da LoginActivity)
+        // Indica visualmente que a conta está sendo criada e evita cliques duplicados
+        btnCadastrar.isEnabled = false
+        btnCadastrar.text = "Criando conta..."
+
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api-ecosmile.onrender.com")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val apiService = retrofit.create(ApiService::class.java)
-        val call = apiService.cadastrar(nome, email, senha)
+        val call = apiService.cadastrar(nome, email, senha, null)
 
-        call.enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    Toast.makeText(this@RegisterActivity, "Cadastro realizado com sucesso!", Toast.LENGTH_LONG).show()
-                    finish() // Volta para a tela de login
+        call.enqueue(object : Callback<UnificadoResponse> {
+            override fun onResponse(call: Call<UnificadoResponse>, response: Response<UnificadoResponse>) {
+                val body = response.body()
+                if (response.isSuccessful && body?.sucesso == true) {
+                    // Guarda os dados de sessão e já faz o login automático
+                    LoginActivity.idUsuarioLogado = body.usuarioId ?: 1
+                    LoginActivity.codigoPacienteLogado = body.codigoPaciente ?: "NDCW"
+
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Conta criada! Seu código é ${body.codigoPaciente}",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                    intent.putExtra("NOME_USUARIO", body.usuarioNome)
+                    startActivity(intent)
+                    finish()
                 } else {
-                    Toast.makeText(this@RegisterActivity, "Erro ao cadastrar.", Toast.LENGTH_SHORT).show()
+                    restaurarBotaoCadastrar()
+                    val mensagem = body?.mensagem ?: "Erro ao cadastrar."
+                    Toast.makeText(this@RegisterActivity, mensagem, Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
+            override fun onFailure(call: Call<UnificadoResponse>, t: Throwable) {
+                restaurarBotaoCadastrar()
                 Toast.makeText(this@RegisterActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun restaurarBotaoCadastrar() {
+        btnCadastrar.isEnabled = true
+        btnCadastrar.text = "Cadastrar"
     }
 
 }

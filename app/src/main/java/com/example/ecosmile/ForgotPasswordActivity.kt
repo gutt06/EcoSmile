@@ -18,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ForgotPasswordActivity : AppCompatActivity() {
 
-
+    private lateinit var btnUpdate: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +33,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
         val btnBack = findViewById<ImageButton>(R.id.backButtonForgot)
         val etEmail = findViewById<EditText>(R.id.forgotEmail)
         val etNovaSenha = findViewById<EditText>(R.id.newPassword)
-        val btnUpdate = findViewById<Button>(R.id.btnUpdatePassword)
+        btnUpdate = findViewById(R.id.btnUpdatePassword)
         val voltarLoginTextView = findViewById<TextView>(R.id.voltarLoginTextView)
 
         btnBack.setOnClickListener { finish() }
@@ -53,6 +53,10 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun atualizarSenhaNoServidor(email: String, novaSenha: String) {
+        // Indica visualmente que a senha está sendo atualizada e evita cliques duplicados
+        btnUpdate.isEnabled = false
+        btnUpdate.text = "Atualizando..."
+
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api-ecosmile.onrender.com") //IP
             .addConverterFactory(GsonConverterFactory.create())
@@ -61,20 +65,32 @@ class ForgotPasswordActivity : AppCompatActivity() {
         val apiService = retrofit.create(ApiService::class.java)
         val call = apiService.trocarSenha(email, novaSenha)
 
-        call.enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    Toast.makeText(this@ForgotPasswordActivity, "Senha alterada!", Toast.LENGTH_LONG).show()
-                    finish()
+        call.enqueue(object : Callback<TrocarSenhaResponse> {
+            override fun onResponse(call: Call<TrocarSenhaResponse>, response: Response<TrocarSenhaResponse>) {
+                val body = response.body()
+                if (response.isSuccessful && body != null) {
+                    Toast.makeText(this@ForgotPasswordActivity, body.mensagem, Toast.LENGTH_LONG).show()
+                    if (body.status == "sucesso") {
+                        finish()
+                    } else {
+                        restaurarBotaoAtualizar()
+                    }
                 } else {
+                    restaurarBotaoAtualizar()
                     Toast.makeText(this@ForgotPasswordActivity, "Erro ao alterar.", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
+            override fun onFailure(call: Call<TrocarSenhaResponse>, t: Throwable) {
+                restaurarBotaoAtualizar()
                 Toast.makeText(this@ForgotPasswordActivity, "Erro de conexão.", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun restaurarBotaoAtualizar() {
+        btnUpdate.isEnabled = true
+        btnUpdate.text = "Redefinir senha"
     }
 
 }

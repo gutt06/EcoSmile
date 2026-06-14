@@ -18,8 +18,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class LoginActivity : AppCompatActivity() {
 
+    companion object {
+        // Guarda os dados do usuário logado para uso nas demais telas do app
+        var idUsuarioLogado: Int = 1
+        var codigoPacienteLogado: String = "NDCW"
+    }
+
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
+    private lateinit var loginButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
         // 1. Inicializando os campos de texto e botões
         emailEditText = findViewById(R.id.emailEditText)
         passwordEditText = findViewById(R.id.passwordEditText)
-        val loginButton: Button = findViewById(R.id.loginButton)
+        loginButton = findViewById(R.id.loginButton)
         val registerTextView: TextView = findViewById(R.id.registerTextView)
         val forgotPasswordTextView: TextView = findViewById(R.id.forgotPasswordTextView)
 
@@ -67,6 +74,10 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
+        // Indica visualmente que o login está sendo verificado e evita cliques duplicados
+        loginButton.isEnabled = false
+        loginButton.text = "Entrando..."
+
         // Configuração do Retrofit (Certifique-se de usar o seu IP atual)
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api-ecosmile.onrender.com")
@@ -74,7 +85,6 @@ class LoginActivity : AppCompatActivity() {
             .build()
 
         val apiService = retrofit.create(ApiService::class.java)
-        val call = apiService.login(email, password)
 
         // 1. Tenta login como Admin primeiro
         apiService.loginAdmin(email, password).enqueue(object : Callback<List<AdminResponse>> {
@@ -91,27 +101,39 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<List<AdminResponse>>, t: Throwable) {
+                restaurarBotaoLogin()
                 Toast.makeText(this@LoginActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_LONG).show()
             }
         })
+    }
+
+    private fun restaurarBotaoLogin() {
+        loginButton.isEnabled = true
+        loginButton.text = "Entrar"
     }
 
     private fun tentarLoginUsuario(apiService: ApiService, email: String, password: String) {
         apiService.login(email, password).enqueue(object : Callback<List<LoginResponse>> {
             override fun onResponse(call: Call<List<LoginResponse>>, response: Response<List<LoginResponse>>) {
                 if (response.isSuccessful && response.body()?.isNotEmpty() == true) {
-                    // É usuário comum — vai para MainActivity passando o nome
-                    val nome = response.body()?.firstOrNull()?.Nome ?: ""
+                    // É usuário comum — guarda os dados de sessão e vai para MainActivity
+                    val usuarioLogado = response.body()!!.first()
+
+                    idUsuarioLogado = usuarioLogado.usuarioId?.toIntOrNull() ?: 1
+                    codigoPacienteLogado = usuarioLogado.codigoPaciente ?: "NDCW"
+
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    intent.putExtra("NOME_USUARIO", nome)
+                    intent.putExtra("NOME_USUARIO", usuarioLogado.usuarioNome)
                     startActivity(intent)
                     finish()
                 } else {
+                    restaurarBotaoLogin()
                     Toast.makeText(this@LoginActivity, "E-mail ou senha incorretos", Toast.LENGTH_LONG).show()
                 }
             }
 
             override fun onFailure(call: Call<List<LoginResponse>>, t: Throwable) {
+                restaurarBotaoLogin()
                 Toast.makeText(this@LoginActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_LONG).show()
             }
         })
