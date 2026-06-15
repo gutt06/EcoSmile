@@ -80,89 +80,54 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Indicador de carregamento dos itens da lojinha -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardLojinhaCarregando"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
-            app:strokeWidth="1.5dp"
-            app:strokeColor="#F0EFEC"
-            app:cardBackgroundColor="#FFFFFF">
-            <LinearLayout
+            app:cardBackgroundColor="#F8FAFA"
+            android:visibility="visible">
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Desconto de 15%"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#111111"
-                    android:fontFamily="@font/sf_pro"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Aplicável na próxima manutenção."
-                    android:textSize="14sp"
-                    android:textColor="#777777"
-                    android:layout_marginBottom="16dp"/>
-                <Button
-                    android:id="@+id/btnResgatarDesconto"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Resgatar por 10 pts"
-                    android:textAllCaps="false"
-                    android:textStyle="bold"
-                    android:backgroundTint="#F97553"
-                    app:cornerRadius="16dp"
-                    android:elevation="0dp"/>
-            </LinearLayout>
+                android:text="Carregando itens da lojinha..."
+                android:textSize="14sp"
+                android:textColor="#999999"
+                android:fontFamily="@font/sf_pro"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.4"
+                android:padding="32dp"/>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Estado vazio: nenhum item disponível -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardLojinhaVazio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
-            app:strokeWidth="1.5dp"
-            app:strokeColor="#F0EFEC"
-            app:cardBackgroundColor="#FFFFFF">
-            <LinearLayout
+            app:cardBackgroundColor="#F8FAFA"
+            android:visibility="gone">
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Escova Ecológica Bamboo"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#111111"
-                    android:fontFamily="@font/sf_pro"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Brinde exclusivo sustentável."
-                    android:textSize="14sp"
-                    android:textColor="#777777"
-                    android:layout_marginBottom="16dp"/>
-                <Button
-                    android:id="@+id/btnResgatarEscova"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Resgatar por 15 pts"
-                    android:textAllCaps="false"
-                    android:textStyle="bold"
-                    android:backgroundTint="#F97553"
-                    app:cornerRadius="16dp"
-                    android:elevation="0dp"/>
-            </LinearLayout>
+                android:text="Nenhum item disponível na lojinha por enquanto.\n\nVolte mais tarde para conferir novidades!"
+                android:textSize="14sp"
+                android:textColor="#999999"
+                android:fontFamily="@font/sf_pro"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.4"
+                android:padding="32dp"/>
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- Itens da lojinha (preenchidos dinamicamente) -->
+        <LinearLayout
+            android:id="@+id/containerLojinha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
 
     </LinearLayout>
 </ScrollView>

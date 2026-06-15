@@ -271,6 +271,45 @@
             android:orientation="vertical"
             android:layout_marginBottom="28dp" />
 
+        <!-- Section label: ponto de coleta -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PONTO DE COLETA"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="#ABABAB"
+            android:fontFamily="@font/sf_pro"
+            android:letterSpacing="0.12"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Seletor de ponto de coleta -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_input_premium"
+            android:layout_marginBottom="28dp">
+
+            <Spinner
+                android:id="@+id/spinnerPontoColeta"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:paddingStart="20dp"
+                android:paddingEnd="44dp"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:src="@android:drawable/arrow_down_float"
+                app:tint="#AAAAAA" />
+
+        </RelativeLayout>
+
         <!-- Botão Finalizar -->
         <Button
             android:id="@+id/btnFinalizarDevolucao"

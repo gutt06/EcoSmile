@@ -1,16 +1,22 @@
 package com.example.ecosmile
 
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.card.MaterialCardView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,6 +28,9 @@ class LojinhaEcoSmileActivity : AppCompatActivity() {
     private val urlApi = "https://api-ecosmile.onrender.com/"
 
     private lateinit var txtSaldoLojinha: TextView
+    private lateinit var cardLojinhaCarregando: MaterialCardView
+    private lateinit var cardLojinhaVazio: MaterialCardView
+    private lateinit var containerLojinha: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,24 +43,18 @@ class LojinhaEcoSmileActivity : AppCompatActivity() {
         }
 
         txtSaldoLojinha = findViewById(R.id.txtSaldoLojinha)
+        cardLojinhaCarregando = findViewById(R.id.cardLojinhaCarregando)
+        cardLojinhaVazio = findViewById(R.id.cardLojinhaVazio)
+        containerLojinha = findViewById(R.id.containerLojinha)
         val btnVoltar = findViewById<ImageView>(R.id.btnVoltarLojinha)
-
-        val btnResgatarDesconto = findViewById<Button>(R.id.btnResgatarDesconto)
-        val btnResgatarEscova = findViewById<Button>(R.id.btnResgatarEscova)
 
         // Traz o saldo real do usuário logo que a tela abre
         buscarSaldoReal()
 
+        // Carrega os itens (descontos e produtos) cadastrados pelo admin
+        buscarItensDaLojinha()
+
         btnVoltar.setOnClickListener { finish() }
-
-        // Conecta os botões com os novos valores super acessíveis
-        btnResgatarDesconto.setOnClickListener {
-            tentarResgatarProduto(btnResgatarDesconto, "Desconto de 15%", "Aplicável em manutenções", "DESC15", 10)
-        }
-
-        btnResgatarEscova.setOnClickListener {
-            tentarResgatarProduto(btnResgatarEscova, "Escova Ecológica Bamboo", "Brinde exclusivo sustentável", "BAMBOO", 15)
-        }
     }
 
     private fun buscarSaldoReal() {
@@ -81,8 +84,117 @@ class LojinhaEcoSmileActivity : AppCompatActivity() {
         })
     }
 
+    private fun buscarItensDaLojinha() {
+        // Indica visualmente que os itens estão sendo carregados
+        cardLojinhaCarregando.visibility = View.VISIBLE
+        cardLojinhaVazio.visibility = View.GONE
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(urlApi)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+
+        apiService.buscarProdutosLojinha().enqueue(object : Callback<List<ProdutoLojinhaResponse>> {
+            override fun onResponse(call: Call<List<ProdutoLojinhaResponse>>, response: Response<List<ProdutoLojinhaResponse>>) {
+                if (response.isSuccessful && response.body() != null) {
+                    desenharItensNaTela(response.body()!!)
+                } else {
+                    desenharItensNaTela(emptyList())
+                }
+            }
+
+            override fun onFailure(call: Call<List<ProdutoLojinhaResponse>>, t: Throwable) {
+                Toast.makeText(this@LojinhaEcoSmileActivity, "Erro ao buscar itens da lojinha: ${t.message}", Toast.LENGTH_SHORT).show()
+                desenharItensNaTela(emptyList())
+            }
+        })
+    }
+
+    private fun desenharItensNaTela(lista: List<ProdutoLojinhaResponse>) {
+        // Os dados chegaram (ou falharam): esconde o indicador de carregamento
+        cardLojinhaCarregando.visibility = View.GONE
+
+        // Controle do Estado Vazio
+        if (lista.isEmpty()) {
+            cardLojinhaVazio.visibility = View.VISIBLE
+            containerLojinha.visibility = View.GONE
+            return
+        } else {
+            cardLojinhaVazio.visibility = View.GONE
+            containerLojinha.visibility = View.VISIBLE
+        }
+
+        containerLojinha.removeAllViews()
+
+        // Função para converter medidas e ficar perfeito em qualquer tela
+        fun Int.dpToPx() = (this * resources.displayMetrics.density).toInt()
+
+        // Puxa a fonte "SF Pro" diretamente da pasta res/font
+        val fonteSfPro = ResourcesCompat.getFont(this, R.font.sf_pro)
+
+        for (item in lista) {
+            val cardView = MaterialCardView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, 0, 0, 16.dpToPx()) }
+                radius = 24.dpToPx().toFloat()
+                strokeWidth = (1.5 * resources.displayMetrics.density).toInt()
+                setStrokeColor(Color.parseColor("#F0EFEC"))
+                cardElevation = 0f
+                setCardBackgroundColor(Color.parseColor("#FFFFFF"))
+            }
+
+            val layoutItem = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(20.dpToPx(), 20.dpToPx(), 20.dpToPx(), 20.dpToPx())
+            }
+
+            val txtTitulo = TextView(this).apply {
+                text = item.titulo
+                textSize = 18f
+                setTypeface(fonteSfPro, Typeface.BOLD)
+                setTextColor(Color.parseColor("#111111"))
+            }
+
+            val txtDesc = TextView(this).apply {
+                text = item.descricao
+                textSize = 14f
+                typeface = fonteSfPro
+                setTextColor(Color.parseColor("#777777"))
+                setPadding(0, 4.dpToPx(), 0, 16.dpToPx())
+            }
+
+            val btnResgatar = Button(this).apply {
+                text = "Resgatar por ${item.custoPontos} pts"
+                isAllCaps = false
+                setTypeface(fonteSfPro, Typeface.BOLD)
+                setTextColor(Color.parseColor("#FFFFFF"))
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    50.dpToPx()
+                )
+                background = ResourcesCompat.getDrawable(resources, R.drawable.bg_button_lojinha, theme)
+                elevation = 0f
+            }
+
+            btnResgatar.setOnClickListener {
+                tentarResgatarProduto(btnResgatar, item.produtoId, item.titulo)
+            }
+
+            layoutItem.addView(txtTitulo)
+            layoutItem.addView(txtDesc)
+            layoutItem.addView(btnResgatar)
+
+            cardView.addView(layoutItem)
+            containerLojinha.addView(cardView)
+        }
+    }
+
     // O Motor de Compra (Conectado ao banco de dados)
-    private fun tentarResgatarProduto(botao: Button, titulo: String, descricao: String, prefixoCupom: String, custoPontos: Int) {
+    private fun tentarResgatarProduto(botao: Button, produtoId: Int, titulo: String) {
         // Indica visualmente que o resgate está sendo processado e evita cliques duplicados
         val textoOriginalBotao = botao.text
         botao.isEnabled = false
@@ -97,10 +209,7 @@ class LojinhaEcoSmileActivity : AppCompatActivity() {
 
         apiService.resgatarCupom(
             LoginActivity.idUsuarioLogado,
-            custoPontos,
-            titulo,
-            descricao,
-            prefixoCupom
+            produtoId
         ).enqueue(object : Callback<ResgateResponse> {
             override fun onResponse(call: Call<ResgateResponse>, response: Response<ResgateResponse>) {
                 botao.isEnabled = true

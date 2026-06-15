@@ -309,105 +309,57 @@
             android:lineSpacingMultiplier="1.3"
             android:layout_marginBottom="16dp" />
 
-        <!-- Card unidade 1 -->
+        <!-- Estado de carregamento -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardPontosColetaCarregando"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:cardCornerRadius="20dp"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
-            app:strokeWidth="1.5dp"
-            app:strokeColor="#FFD4C4"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardBackgroundColor="#F8FAFA"
+            android:visibility="visible">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="20dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_mylocation"
-                    app:tint="#F97553"
-                    android:layout_marginEnd="16dp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Unidade Paulista"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="#111111"
-                        android:fontFamily="@font/sf_pro" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Av. Exemplo, 1245 • 08:00 às 20:00"
-                        android:textSize="12sp"
-                        android:textColor="#999999"
-                        android:fontFamily="@font/sf_pro" />
-                </LinearLayout>
-            </LinearLayout>
+                android:text="Carregando pontos de coleta..."
+                android:textSize="13sp"
+                android:textColor="#999999"
+                android:fontFamily="@font/sf_pro"
+                android:gravity="center"
+                android:padding="28dp" />
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Card unidade 2 -->
+        <!-- Estado vazio -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardPontosColetaVazio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            app:cardCornerRadius="20dp"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
-            app:strokeWidth="1.5dp"
-            app:strokeColor="#FFD4C4"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardBackgroundColor="#F8FAFA"
+            android:visibility="gone">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="20dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_mylocation"
-                    app:tint="#F97553"
-                    android:layout_marginEnd="16dp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Unidade Pinheiros"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="#111111"
-                        android:fontFamily="@font/sf_pro" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rua Nova, 872 • 09:00 às 18:00"
-                        android:textSize="12sp"
-                        android:textColor="#999999"
-                        android:fontFamily="@font/sf_pro" />
-                </LinearLayout>
-            </LinearLayout>
+                android:text="Nenhum ponto de coleta cadastrado ainda."
+                android:textSize="13sp"
+                android:textColor="#999999"
+                android:fontFamily="@font/sf_pro"
+                android:gravity="center"
+                android:padding="28dp" />
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- Container dinâmico para os pontos de coleta (preenchido via código) -->
+        <LinearLayout
+            android:id="@+id/containerPontosColeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp" />
 
         <!-- ── Histórico de devoluções ────────────────────────────── -->
         <TextView

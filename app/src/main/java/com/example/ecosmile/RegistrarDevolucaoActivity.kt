@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -41,6 +43,14 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
     private lateinit var txtNenhumCodigo: TextView
     private lateinit var containerCodigos: LinearLayout
     private lateinit var btnFinalizar: Button
+    private lateinit var spinnerPontoColeta: Spinner
+
+    // Valor de pontos por alinhador devolvido, configurado dinamicamente pelo admin
+    private var pontosPorAlinhador = 50
+
+    // Pontos de coleta disponíveis para seleção na devolução
+    private var listaPontosColeta: List<PontoColetaResponse> = emptyList()
+    private var carregandoPontosColeta = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +65,25 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
         inputCodigo = findViewById(R.id.inputCodigoAlinhador)
         txtNenhumCodigo = findViewById(R.id.txtNenhumCodigo)
         containerCodigos = findViewById(R.id.containerCodigosRegistrados)
+        spinnerPontoColeta = findViewById(R.id.spinnerPontoColeta)
 
         val btnVoltar = findViewById<ImageView>(R.id.btnVoltarDevolucao)
         val btnAdicionar = findViewById<Button>(R.id.btnAdicionarCodigo)
         btnFinalizar = findViewById(R.id.btnFinalizarDevolucao)
 
         btnVoltar.setOnClickListener { finish() }
+
+        // Indica visualmente que o ponto de coleta está sendo carregado
+        spinnerPontoColeta.adapter = ArrayAdapter(
+            this, R.layout.spinner_item_ponto_coleta, listOf("Carregando pontos de coleta...")
+        )
+        spinnerPontoColeta.isEnabled = false
+
+        // Busca o valor de pontos por alinhador configurado pelo admin
+        carregarConfiguracaoPontos()
+
+        // Busca os pontos de coleta cadastrados para o usuário selecionar
+        carregarPontosDeColeta()
 
         // Ação de Adicionar com a validação simplificada
         btnAdicionar.setOnClickListener {
@@ -103,8 +126,81 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (carregandoPontosColeta) {
+                Toast.makeText(this, "Aguarde o carregamento dos pontos de coleta.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (listaPontosColeta.isNotEmpty() && spinnerPontoColeta.selectedItemPosition < 0) {
+                Toast.makeText(this, "Selecione o ponto de coleta onde os alinhadores serão entregues.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             registrarDevolucoesNoBanco()
         }
+    }
+
+    private fun carregarConfiguracaoPontos() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(urlApi)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+
+        apiService.buscarConfig().enqueue(object : Callback<ConfigResponse> {
+            override fun onResponse(call: Call<ConfigResponse>, response: Response<ConfigResponse>) {
+                val body = response.body()
+                if (response.isSuccessful && body != null) {
+                    pontosPorAlinhador = body.pontosPorAlinhador
+                    // Atualiza os "+X pts" já exibidos com o valor correto
+                    atualizarInterfaceItens()
+                }
+            }
+
+            override fun onFailure(call: Call<ConfigResponse>, t: Throwable) {
+                // Mantém o valor padrão (50) em caso de falha de conexão
+            }
+        })
+    }
+
+    private fun carregarPontosDeColeta() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(urlApi)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+
+        apiService.buscarPontosColeta().enqueue(object : Callback<List<PontoColetaResponse>> {
+            override fun onResponse(call: Call<List<PontoColetaResponse>>, response: Response<List<PontoColetaResponse>>) {
+                carregandoPontosColeta = false
+                val lista = if (response.isSuccessful) response.body() ?: emptyList() else emptyList()
+                listaPontosColeta = lista
+
+                if (lista.isEmpty()) {
+                    spinnerPontoColeta.adapter = ArrayAdapter(
+                        this@RegistrarDevolucaoActivity, R.layout.spinner_item_ponto_coleta, listOf("Nenhum ponto de coleta disponível")
+                    )
+                    spinnerPontoColeta.isEnabled = false
+                } else {
+                    spinnerPontoColeta.adapter = ArrayAdapter(
+                        this@RegistrarDevolucaoActivity, R.layout.spinner_item_ponto_coleta, lista.map { it.nome }
+                    )
+                    spinnerPontoColeta.isEnabled = true
+                }
+            }
+
+            override fun onFailure(call: Call<List<PontoColetaResponse>>, t: Throwable) {
+                carregandoPontosColeta = false
+                listaPontosColeta = emptyList()
+                spinnerPontoColeta.adapter = ArrayAdapter(
+                    this@RegistrarDevolucaoActivity, R.layout.spinner_item_ponto_coleta, listOf("Erro ao carregar pontos de coleta")
+                )
+                spinnerPontoColeta.isEnabled = false
+                Toast.makeText(this@RegistrarDevolucaoActivity, "Erro de conexão ao buscar pontos de coleta.", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun registrarDevolucoesNoBanco() {
@@ -119,7 +215,14 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
 
         val apiService = retrofit.create(ApiService::class.java)
 
-        val pontosPorAlinhador = 50
+        // Identifica o ponto de coleta selecionado (se houver algum disponível)
+        val posicaoSelecionada = spinnerPontoColeta.selectedItemPosition
+        val pontoColetaId: Int? = if (listaPontosColeta.isNotEmpty() && posicaoSelecionada in listaPontosColeta.indices) {
+            listaPontosColeta[posicaoSelecionada].id
+        } else {
+            null
+        }
+
         val totalCodigos = codigosAtuais.size
 
         var respostasRecebidas = 0
@@ -130,7 +233,8 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
                 LoginActivity.idUsuarioLogado,
                 alinhador.codigo,
                 alinhador.fase,
-                pontosPorAlinhador
+                pontosPorAlinhador,
+                pontoColetaId
             ).enqueue(object : Callback<DevolucaoResponse> {
                 override fun onResponse(call: Call<DevolucaoResponse>, response: Response<DevolucaoResponse>) {
                     respostasRecebidas++
@@ -206,7 +310,7 @@ class RegistrarDevolucaoActivity : AppCompatActivity() {
             }
 
             val txtPts = TextView(this).apply {
-                text = "+50 pts"
+                text = "+$pontosPorAlinhador pts"
                 textSize = 16f
                 setTypeface(null, Typeface.BOLD)
                 setTextColor(Color.parseColor("#F97553"))

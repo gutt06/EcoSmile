@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.card.MaterialCardView
@@ -31,6 +32,9 @@ class EcoSmileActivity : AppCompatActivity() {
     private lateinit var containerHistorico: LinearLayout
     private lateinit var cardHistoricoVazio: MaterialCardView
     private lateinit var cardHistoricoCarregando: MaterialCardView
+    private lateinit var containerPontosColeta: LinearLayout
+    private lateinit var cardPontosColetaVazio: MaterialCardView
+    private lateinit var cardPontosColetaCarregando: MaterialCardView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +50,9 @@ class EcoSmileActivity : AppCompatActivity() {
         containerHistorico = findViewById(R.id.containerHistorico)
         cardHistoricoVazio = findViewById(R.id.cardHistoricoVazio)
         cardHistoricoCarregando = findViewById(R.id.cardHistoricoCarregando)
+        containerPontosColeta = findViewById(R.id.containerPontosColeta)
+        cardPontosColetaVazio = findViewById(R.id.cardPontosColetaVazio)
+        cardPontosColetaCarregando = findViewById(R.id.cardPontosColetaCarregando)
 
         val btnVoltar = findViewById<ImageView>(R.id.btnVoltarEco)
         val btnRegistrarDevolucao = findViewById<Button>(R.id.btnRegistrarDevolucao)
@@ -118,6 +125,96 @@ class EcoSmileActivity : AppCompatActivity() {
                 renderizarHistorico(emptyList())
             }
         })
+
+        // 3. Busca os pontos de coleta disponíveis
+        apiService.buscarPontosColeta().enqueue(object : Callback<List<PontoColetaResponse>> {
+            override fun onResponse(call: Call<List<PontoColetaResponse>>, response: Response<List<PontoColetaResponse>>) {
+                if (response.isSuccessful && response.body() != null) {
+                    renderizarPontosColeta(response.body()!!)
+                } else {
+                    renderizarPontosColeta(emptyList())
+                }
+            }
+
+            override fun onFailure(call: Call<List<PontoColetaResponse>>, t: Throwable) {
+                renderizarPontosColeta(emptyList())
+            }
+        })
+    }
+
+    private fun renderizarPontosColeta(lista: List<PontoColetaResponse>) {
+        containerPontosColeta.removeAllViews()
+
+        // Os dados chegaram (ou falharam): esconde o indicador de carregamento
+        cardPontosColetaCarregando.visibility = View.GONE
+
+        // Lógica de Visibilidade: Controla se mostra a lista ou o card de estado vazio
+        if (lista.isEmpty()) {
+            cardPontosColetaVazio.visibility = View.VISIBLE
+            containerPontosColeta.visibility = View.GONE
+            return
+        } else {
+            cardPontosColetaVazio.visibility = View.GONE
+            containerPontosColeta.visibility = View.VISIBLE
+        }
+
+        fun Int.dpToPx() = (this * resources.displayMetrics.density).toInt()
+
+        val fonteSfPro = ResourcesCompat.getFont(this, R.font.sf_pro)
+
+        for (item in lista) {
+            val cardView = MaterialCardView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, 0, 0, 12.dpToPx()) }
+                radius = 20.dpToPx().toFloat()
+                strokeWidth = (1.5 * resources.displayMetrics.density).toInt()
+                setStrokeColor(Color.parseColor("#FFD4C4"))
+                cardElevation = 0f
+                setCardBackgroundColor(Color.parseColor("#FFFFFF"))
+            }
+
+            val layoutItem = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(20.dpToPx(), 20.dpToPx(), 20.dpToPx(), 20.dpToPx())
+            }
+
+            val icone = ImageView(this).apply {
+                setImageResource(android.R.drawable.ic_menu_mylocation)
+                setColorFilter(Color.parseColor("#F97553"))
+                layoutParams = LinearLayout.LayoutParams(24.dpToPx(), 24.dpToPx()).apply {
+                    marginEnd = 16.dpToPx()
+                }
+            }
+
+            val colTexto = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+            }
+
+            val txtNome = TextView(this).apply {
+                text = item.nome
+                textSize = 15f
+                setTypeface(fonteSfPro, Typeface.BOLD)
+                setTextColor(Color.parseColor("#111111"))
+            }
+
+            val txtDetalhe = TextView(this).apply {
+                text = "${item.endereco} • ${item.horario}"
+                textSize = 12f
+                typeface = fonteSfPro
+                setTextColor(Color.parseColor("#999999"))
+            }
+
+            colTexto.addView(txtNome)
+            colTexto.addView(txtDetalhe)
+
+            layoutItem.addView(icone)
+            layoutItem.addView(colTexto)
+            cardView.addView(layoutItem)
+            containerPontosColeta.addView(cardView)
+        }
     }
 
     private fun exibirPopUpPassoAPasso() {
