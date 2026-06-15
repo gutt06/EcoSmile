@@ -59,19 +59,36 @@ interface ApiService {
         @Field("usuario_id") usuarioId: Int,
         @Field("codigo_alinhador") codigoAlinhador: String,
         @Field("fase") fase: Int,
-        @Field("pontos") pontos: Int
+        @Field("pontos") pontos: Int,
+        @Field("ponto_coleta_id") pontoColetaId: Int? = null
     ): Call<DevolucaoResponse>
 
-    // Metodo para resgatar um cupom da lojinha
+    // Metodo para resgatar um item da lojinha (desconto ou produto)
     @FormUrlEncoded
     @POST("resgatar_cupom.php")
     fun resgatarCupom(
         @Field("usuario_id") usuarioId: Int,
-        @Field("custo") custo: Int,
-        @Field("titulo") titulo: String,
-        @Field("descricao") descricao: String,
-        @Field("prefixo") prefixo: String
+        @Field("produto_id") produtoId: Int
     ): Call<ResgateResponse>
+
+    // Metodo para buscar a configuracao atual de pontos por alinhador
+    @GET("buscar_config.php")
+    fun buscarConfig(): Call<ConfigResponse>
+
+    // Metodo para salvar a configuracao de pontos por alinhador
+    @FormUrlEncoded
+    @POST("salvar_config.php")
+    fun salvarConfig(
+        @Field("pontos_por_alinhador") pontosPorAlinhador: Int
+    ): Call<ConfigResponse>
+
+    // Metodo para buscar os itens (descontos/produtos) disponiveis na Lojinha
+    @GET("buscar_produtos_lojinha.php")
+    fun buscarProdutosLojinha(): Call<List<ProdutoLojinhaResponse>>
+
+    // Metodo para buscar os pontos de coleta disponiveis
+    @GET("buscar_pontos_coleta.php")
+    fun buscarPontosColeta(): Call<List<PontoColetaResponse>>
 
     // Rotas de admin
 
@@ -82,42 +99,23 @@ interface ApiService {
         @Query("senha") senha: String
     ): Call<List<AdminResponse>>
 
-    // tipo de consulta
+    // criar item (desconto ou produto) para a lojinha
     @FormUrlEncoded
-    @POST("criar_tipo_consulta.php")
-    fun criarTipoConsulta(
-        @Field("descricao") descricao: String,
-        @Field("unidade") unidade: String,
-        @Field("valor") valor: String
-    ): Call<Void>
+    @POST("criar_produto_lojinha.php")
+    fun criarProdutoLojinha(
+        @Field("tipo") tipo: String,
+        @Field("titulo") titulo: String,
+        @Field("descricao") descricao: String? = null,
+        @Field("valor_desconto") valorDesconto: String? = null,
+        @Field("custo_pontos") custoPontos: Int
+    ): Call<MensagemResponse>
 
-    // tipo de desconto
-    @FormUrlEncoded
-    @POST("criar_tipo_desconto.php")
-    fun criarTipoDesconto(
-        @Field("descricao") descricao: String,
-        @Field("expira") expira: String,
-        @Field("valor") valor: String
-    ): Call<Void>
-
-    // ponto de coleta
+    // criar ponto de coleta
     @FormUrlEncoded
     @POST("criar_ponto_coleta.php")
     fun criarPontoColeta(
         @Field("nome") nome: String,
         @Field("endereco") endereco: String,
-        @Field("latitude") latitude: String,
-        @Field("longitude") longitude: String,
         @Field("horario") horario: String
-    ): Call<Void>
-
-    // token
-    @GET("token.php")
-    fun listarTokens(): Call<List<TokenResponse>>
-
-    @FormUrlEncoded
-    @POST("token.php")
-    fun gerarToken(
-        @Field("tipoDesconto_ID") tipoDescontoId: String
-    ): Call<TokenGeradoResponse>
+    ): Call<MensagemResponse>
 }

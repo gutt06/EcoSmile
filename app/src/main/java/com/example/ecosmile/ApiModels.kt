@@ -46,3 +46,35 @@ data class HistoricoResponse(
     val dataDevolucao: String,
     val pontosGerados: Int
 )
+
+// Resposta genérica usada por endpoints de cadastro do admin
+data class MensagemResponse(
+    val sucesso: Boolean,
+    val mensagem: String?
+)
+
+// Configuração de pontos por alinhador devolvido (tela "Configurar Pontos")
+data class ConfigResponse(
+    val sucesso: Boolean,
+    val pontosPorAlinhador: Int,
+    val mensagem: String? = null
+)
+
+// Item da Lojinha (descontos e produtos cadastrados pelo admin)
+data class ProdutoLojinhaResponse(
+    val produtoId: Int,
+    val titulo: String,
+    val descricao: String?,
+    val custoPontos: Int,
+    val valorDesconto: Double?,
+    val tipo: String?,
+    val imageUrl: String?
+)
+
+// Ponto de coleta de alinhadores
+data class PontoColetaResponse(
+    val id: Int,
+    val nome: String,
+    val endereco: String,
+    val horario: String
+)
