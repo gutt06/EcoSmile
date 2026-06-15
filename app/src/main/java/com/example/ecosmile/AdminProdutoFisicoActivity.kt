@@ -15,17 +15,17 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class AdminPontoColetaActivity : AppCompatActivity() {
+class AdminProdutoFisicoActivity : AppCompatActivity() {
 
     private lateinit var etNome: EditText
-    private lateinit var etEndereco: EditText
-    private lateinit var etHorario: EditText
-    private lateinit var btnCriar: Button
+    private lateinit var etDescricao: EditText
+    private lateinit var etCustoPontos: EditText
+    private lateinit var btnCadastrar: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_admin_ponto_coleta)
+        setContentView(R.layout.activity_admin_produto_fisico)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -34,30 +34,37 @@ class AdminPontoColetaActivity : AppCompatActivity() {
 
         val btnBack = findViewById<ImageView>(R.id.backButton)
         etNome = findViewById(R.id.etNome)
-        etEndereco = findViewById(R.id.etEndereco)
-        etHorario = findViewById(R.id.etHorario)
-        btnCriar = findViewById(R.id.btnCriar)
+        etDescricao = findViewById(R.id.etDescricao)
+        etCustoPontos = findViewById(R.id.etCustoPontos)
+        btnCadastrar = findViewById(R.id.btnCadastrar)
 
         btnBack.setOnClickListener { finish() }
 
-        btnCriar.setOnClickListener {
+        btnCadastrar.setOnClickListener {
             val nome = etNome.text.toString().trim()
-            val endereco = etEndereco.text.toString().trim()
-            val horario = etHorario.text.toString().trim()
+            val descricao = etDescricao.text.toString().trim()
+            val custoPontosTexto = etCustoPontos.text.toString().trim()
 
-            if (nome.isEmpty() || endereco.isEmpty() || horario.isEmpty()) {
+            if (nome.isEmpty() || descricao.isEmpty() || custoPontosTexto.isEmpty()) {
                 Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            criarPontoColeta(nome, endereco, horario)
+            val custoPontos = custoPontosTexto.toIntOrNull()
+
+            if (custoPontos == null || custoPontos < 0) {
+                Toast.makeText(this, "Informe um custo em pontos válido.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            criarProduto(nome, descricao, custoPontos)
         }
     }
 
-    private fun criarPontoColeta(nome: String, endereco: String, horario: String) {
-        // Indica visualmente que o ponto de coleta está sendo cadastrado e evita cliques duplicados
-        btnCriar.isEnabled = false
-        btnCriar.text = "Criando..."
+    private fun criarProduto(nome: String, descricao: String, custoPontos: Int) {
+        // Indica visualmente que o produto está sendo cadastrado e evita cliques duplicados
+        btnCadastrar.isEnabled = false
+        btnCadastrar.text = "Cadastrando..."
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api-ecosmile.onrender.com/")
@@ -66,27 +73,33 @@ class AdminPontoColetaActivity : AppCompatActivity() {
 
         val apiService = retrofit.create(ApiService::class.java)
 
-        apiService.criarPontoColeta(nome, endereco, horario).enqueue(object : Callback<MensagemResponse> {
+        apiService.criarProdutoLojinha(
+            tipo = "produto",
+            titulo = nome,
+            descricao = descricao,
+            valorDesconto = null,
+            custoPontos = custoPontos
+        ).enqueue(object : Callback<MensagemResponse> {
             override fun onResponse(call: Call<MensagemResponse>, response: Response<MensagemResponse>) {
                 val body = response.body()
                 if (response.isSuccessful && body?.sucesso == true) {
-                    Toast.makeText(this@AdminPontoColetaActivity, body.mensagem ?: "Ponto de coleta criado!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@AdminProdutoFisicoActivity, body.mensagem ?: "Produto adicionado à Lojinha!", Toast.LENGTH_LONG).show()
                     finish()
                 } else {
                     restaurarBotao()
-                    Toast.makeText(this@AdminPontoColetaActivity, body?.mensagem ?: "Erro ao criar ponto de coleta.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AdminProdutoFisicoActivity, body?.mensagem ?: "Erro ao criar produto.", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<MensagemResponse>, t: Throwable) {
                 restaurarBotao()
-                Toast.makeText(this@AdminPontoColetaActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@AdminProdutoFisicoActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_LONG).show()
             }
         })
     }
 
     private fun restaurarBotao() {
-        btnCriar.isEnabled = true
-        btnCriar.text = "Criar Local"
+        btnCadastrar.isEnabled = true
+        btnCadastrar.text = "Cadastrar Produto"
     }
 }

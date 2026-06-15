@@ -35,6 +35,18 @@
             android:name=".AdminHomeActivity"
             android:exported="false" />
         <activity
+            android:name=".AdminConfigurarPontosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminTipoDescontoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminPontoColetaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminProdutoFisicoActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
 

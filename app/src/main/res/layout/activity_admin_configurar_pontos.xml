@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="40dp">
+
+        <!-- Top Bar -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="#333333"
+                android:background="@drawable/bg_circle_gray"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Regra de Pontos"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#111111"
+                android:fontFamily="@font/sf_pro" />
+
+        </RelativeLayout>
+
+        <!-- Descrição -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Defina quantos pontos virtuais cada usuário recebe ao devolver corretamente um alinhador usado."
+            android:textSize="14sp"
+            android:textColor="#AAAAAA"
+            android:fontFamily="@font/sf_pro"
+            android:lineSpacingMultiplier="1.5"
+            android:layout_marginBottom="28dp" />
+
+        <!-- Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VALOR POR ALINHADOR (PTS)"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="#ABABAB"
+            android:fontFamily="@font/sf_pro"
+            android:letterSpacing="0.12"
+            android:layout_marginBottom="14dp" />
+
+        <!-- Stepper -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#F0EFEC"
+            app:cardBackgroundColor="#FAFAF9">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnDecrementar"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1.5dp"
+                    app:strokeColor="#317589"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="–"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="#317589"
+                        android:gravity="center" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/txtValorPontos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Carregando..."
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:textColor="#317589"
+                    android:fontFamily="@font/sf_pro"
+                    android:gravity="center" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnIncrementar"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1.5dp"
+                    app:strokeColor="#317589"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="+"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="#317589"
+                        android:gravity="center" />
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Texto auxiliar -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Esse valor será creditado na carteira do usuário para cada alinhador devolvido corretamente no ponto de coleta."
+            android:textSize="13sp"
+            android:textColor="#999999"
+            android:fontFamily="@font/sf_pro"
+            android:lineSpacingMultiplier="1.4"
+            android:layout_marginBottom="36dp" />
+
+        <!-- Botão Salvar -->
+        <Button
+            android:id="@+id/btnSalvarConfig"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Salvar Configuração"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/sf_pro"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#317589"
+            app:cornerRadius="28dp"
+            android:elevation="0dp" />
+
+    </LinearLayout>
+</ScrollView>

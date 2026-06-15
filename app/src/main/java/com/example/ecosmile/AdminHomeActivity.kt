@@ -3,15 +3,13 @@ package com.example.ecosmile
 import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.card.MaterialCardView
 
 class AdminHomeActivity : AppCompatActivity() {
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,28 +21,28 @@ class AdminHomeActivity : AppCompatActivity() {
             insets
         }
 
-        // Botão Cadastrar Tipo de Consulta
-        findViewById<LinearLayout>(R.id.btnTipoConsulta).setOnClickListener {
-            startActivity(Intent(this, AdminTipoConsultaActivity::class.java))
+        // Card "Configurar Pontos" -> Regra de pontos por alinhador devolvido
+        findViewById<MaterialCardView>(R.id.btnConfigurarPontos).setOnClickListener {
+            startActivity(Intent(this, AdminConfigurarPontosActivity::class.java))
         }
 
-        // Botão Cadastrar Desconto
-        findViewById<LinearLayout>(R.id.btnTipoDesconto).setOnClickListener {
+        // Card "Cadastrar desconto" -> cria item tipo "desconto" na Lojinha
+        findViewById<MaterialCardView>(R.id.btnCadastrarDesconto).setOnClickListener {
             startActivity(Intent(this, AdminTipoDescontoActivity::class.java))
         }
 
-        // Botão Cadastrar Ponto de Coleta
-        findViewById<LinearLayout>(R.id.btnPontoColeta).setOnClickListener {
+        // Card "Cadastrar ponto de coleta" -> novo ponto de coleta
+        findViewById<MaterialCardView>(R.id.btnCadastrarPontoColeta).setOnClickListener {
             startActivity(Intent(this, AdminPontoColetaActivity::class.java))
         }
 
-        // Botão Cadastrar Token
-        findViewById<LinearLayout>(R.id.btnToken).setOnClickListener {
-            startActivity(Intent(this, AdminTokenActivity::class.java))
+        // Card "Cadastrar produto físico" -> cria item tipo "produto" na Lojinha
+        findViewById<MaterialCardView>(R.id.btnCadastrarProduto).setOnClickListener {
+            startActivity(Intent(this, AdminProdutoFisicoActivity::class.java))
         }
 
         // Botão Sair
-        findViewById<TextView>(R.id.btnSair).setOnClickListener {
+        findViewById<LinearLayout>(R.id.btnSair).setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finishAffinity() // Fecha todas as activities
         }

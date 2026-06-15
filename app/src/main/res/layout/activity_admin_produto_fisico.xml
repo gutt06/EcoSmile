@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Criar ponto"
+                android:text="Novo Produto"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:textColor="#111111"
@@ -51,18 +51,18 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cadastre uma nova unidade para receber os alinhadores devolvidos pelos usuários do EcoSmile."
+            android:text="Cadastre uma recompensa física para ser exibida na Lojinha EcoSmile e resgatada pelos usuários com pontos."
             android:textSize="14sp"
             android:textColor="#AAAAAA"
             android:fontFamily="@font/sf_pro"
             android:lineSpacingMultiplier="1.5"
             android:layout_marginBottom="28dp" />
 
-        <!-- Campo Nome da Unidade -->
+        <!-- Campo Nome do Produto -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="NOME DA UNIDADE"
+            android:text="NOME DO PRODUTO"
             android:textSize="10sp"
             android:textStyle="bold"
             android:textColor="#ABABAB"
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@drawable/bg_input_premium"
-            android:hint="Ex: Unidade Paulista"
+            android:hint="Ex: Escova Ecológica Bamboo"
             android:textColorHint="#BBBBBB"
             android:textColor="#1A1A1A"
             android:inputType="text"
@@ -85,11 +85,11 @@
             android:fontFamily="@font/sf_pro"
             android:layout_marginBottom="20dp" />
 
-        <!-- Campo Endereço -->
+        <!-- Campo Descrição -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ENDEREÇO"
+            android:text="DESCRIÇÃO"
             android:textSize="10sp"
             android:textStyle="bold"
             android:textColor="#ABABAB"
@@ -98,25 +98,28 @@
             android:layout_marginBottom="10dp" />
 
         <EditText
-            android:id="@+id/etEndereco"
+            android:id="@+id/etDescricao"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="120dp"
             android:background="@drawable/bg_input_premium"
-            android:hint="Ex: Av. Paulista, 1000 - São Paulo"
+            android:hint="Descreva o produto que será entregue ao usuário"
             android:textColorHint="#BBBBBB"
             android:textColor="#1A1A1A"
-            android:inputType="textPostalAddress|textCapSentences"
+            android:inputType="textMultiLine|textCapSentences"
+            android:gravity="top|start"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:textSize="15sp"
             android:fontFamily="@font/sf_pro"
             android:layout_marginBottom="20dp" />
 
-        <!-- Campo Horário -->
+        <!-- Campo Custo em Pontos -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="HORÁRIO"
+            android:text="CUSTO (PONTOS)"
             android:textSize="10sp"
             android:textStyle="bold"
             android:textColor="#ABABAB"
@@ -125,26 +128,26 @@
             android:layout_marginBottom="10dp" />
 
         <EditText
-            android:id="@+id/etHorario"
+            android:id="@+id/etCustoPontos"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@drawable/bg_input_premium"
-            android:hint="Ex: Seg a Sex, 08h às 18h"
+            android:hint="Ex: 15"
             android:textColorHint="#BBBBBB"
             android:textColor="#1A1A1A"
-            android:inputType="text"
+            android:inputType="number"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:textSize="15sp"
             android:fontFamily="@font/sf_pro"
             android:layout_marginBottom="36dp" />
 
-        <!-- Botão Criar -->
+        <!-- Botão Cadastrar -->
         <Button
-            android:id="@+id/btnCriar"
+            android:id="@+id/btnCadastrar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Criar Local"
+            android:text="Cadastrar Produto"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:textStyle="bold"
